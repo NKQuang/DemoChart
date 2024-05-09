@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas {
+            max-width: 600px;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Biểu đồ giá chứng khoán</h1>
+
+    <canvas id="stockChart"></canvas>
+
+    <script>
+        // text generate data vì chưa biết data như thế nào!!!!
+        //---------------------------------//
+        function generateStockData(months) {
+                const data = [];
+                let currentPrice = 100; // Giá ban đầu
+                const volatility = 0.05; // Mức độ biến động
+                const trend = 0.02; // Tăng trưởng trung bình
+
+                for (let i = 0; i < months; i++) {
+                    // Tính toán giá mới dựa trên biến động và tăng trưởng trung bình
+                    const randomChange = volatility * currentPrice * (Math.random() - 0.5);
+                    currentPrice += randomChange + trend * currentPrice;
+
+                    data.push({
+                        month: i + 1,
+                        price: currentPrice.toFixed(4) // Giữ lại chữ số sau dấu thập phân
+                    });
+                }
+
+                return data;
+            }
+
+        const data = generateStockData(12); // Tạo dữ liệu cho 12 tháng
+
+
+
+        // Biểu đồ
+        var ctx = document.getElementById('stockChart').getContext('2d');
+        
+
+        var labels = data.map(function(item) {
+            return 'Tháng ' + item.month;
+        });
+        var prices = data.map(function(item) {
+            return item.price;
+        });
+        var stockData = '<%='+ JSON.stringify(data) +'%>';
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Giá chứng khoán',
+                    data: prices,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
